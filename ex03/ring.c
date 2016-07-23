@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	MPI_Status stat[2];
 	MPI_Isend(A, 10000, MPI_FLOAT, 
 		partnerSend, 0, MPI_COMM_WORLD, &req[0]);
-	MPI_Irecv(B, 10000, MPI_INT, 
+	MPI_Irecv(B, 10000, MPI_FLOAT, 
 		partnerRecv, 0, MPI_COMM_WORLD, &req[1]);
 	//  Espera a conclusão dos envios e recebimentos
 	MPI_Waitall(2, req, stat);
