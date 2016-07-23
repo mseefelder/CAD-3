@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	//mensagem com um inteiro (seu id)
 	//  Cada tarefa recebe do seu parceiro uma 
 	//mensagem com um inteiro (id do parceiro)
-	//  Bloqueante: menores ids enviam primeiro
+	//  Nao-bloqueante: todo mundo se comporta igual
 	int received = -1;
 	MPI_Request req[2];
 	MPI_Status stat[2];
