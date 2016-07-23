@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 	//Inicialize o ambiente MPI
 	MPI_Init( &argc, &argv );
 
+	//Matriz local e de recebimento
 	float A[10000], B[10000];
 	
 	//  Obtem a identificacao da tarefa
