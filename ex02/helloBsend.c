@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	//  Cada tarefa determina sua parceira para envio
 	int partner = (taskId < commSize/2) ?
 		commSize/2 + taskId : taskId - commSize/2;
-	//  Cada tarefa envia para seu perceiro uma 
+	//  Cada tarefa envia para seu parceiro uma 
 	//mensagem com um inteiro (seu id)
 	//  Cada tarefa recebe do seu parceiro uma 
 	//mensagem com um inteiro (id do parceiro)

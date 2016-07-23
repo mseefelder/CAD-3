@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	//  Cada tarefa determina sua parceira para envio
 	int partner = (taskId < commSize/2) ?
 		commSize/2 + taskId : taskId - commSize/2;
-	//  Cada tarefa envia para seu perceiro uma 
+	//  Cada tarefa envia para seu parceiro uma 
 	//mensagem com um inteiro (seu id)
 	//  Cada tarefa recebe do seu parceiro uma 
 	//mensagem com um inteiro (id do parceiro)
@@ -42,17 +42,10 @@ int main(int argc, char *argv[])
 	int received = -1;
 	MPI_Request req[2];
 	MPI_Status stat[2];
-	if (taskId < commSize/2) {
-		MPI_Isend(&taskId, 1, MPI_INT, 
-			partner, 0, MPI_COMM_WORLD, &req[0]);
-		MPI_Irecv(&received, 1, MPI_INT, 
-			partner, 0, MPI_COMM_WORLD, &req[1]);
-	} else {
-		MPI_Irecv(&received, 1, MPI_INT, 
-			partner, 0, MPI_COMM_WORLD, &req[1]);
-		MPI_Isend(&taskId, 1, MPI_INT, 
-			partner, 0, MPI_COMM_WORLD, &req[0]);
-	}
+	MPI_Isend(&taskId, 1, MPI_INT, 
+		partner, 0, MPI_COMM_WORLD, &req[0]);
+	MPI_Irecv(&received, 1, MPI_INT, 
+		partner, 0, MPI_COMM_WORLD, &req[1]);
 	//  Espera a conclusão dos envios e recebimentos
 	MPI_Waitall(2, req, stat);
 	//  Cada tarefa imprime a confirmação
