@@ -25,9 +25,10 @@ int32_t main(int32_t argc, char** argv){
     b = malloc(N*sizeof(int));
 
     for(i=0; i<N; i++){
-      a[i] = 1;
-      b[i] = 1;
+      a[i] = rand();
+      b[i] = rand();
     }
+    printf("Finished generating random numbers\n");
   }
 
   int32_t * sa = malloc(NperP*sizeof(int));
@@ -36,7 +37,6 @@ int32_t main(int32_t argc, char** argv){
   // Distribute sub-vectors
   MPI_Scatter(a, NperP, MPI_INTEGER, sa, NperP, MPI_INTEGER, ROOT, MPI_COMM_WORLD);
   MPI_Scatter(b, NperP, MPI_INTEGER, sb, NperP, MPI_INTEGER, ROOT, MPI_COMM_WORLD);
-
 
   int32_t subProduct = 0;
   for(i = 0; i < NperP; i++){
