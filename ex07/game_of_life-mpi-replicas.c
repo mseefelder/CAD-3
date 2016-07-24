@@ -1,7 +1,8 @@
 /***********************
 
 Jogo da Vida
-Versão sequencial 
+Versão sequencial replicada
+em processos
 
 ************************/
 //Use o arquivo de inclusao apropriado

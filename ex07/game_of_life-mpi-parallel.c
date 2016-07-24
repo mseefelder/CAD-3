@@ -1,7 +1,7 @@
 /***********************
 
 Jogo da Vida
-Versão sequencial
+Versão paralela
 
 ************************/
 //Use o arquivo de inclusao apropriado
@@ -9,7 +9,7 @@ Versão sequencial
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NI 700        /* tamanho dos array  */
+#define NI 700        /* tamanho dos arrays  */
 #define NJ 700
 
 #define NSTEPS 500    /* Numero de iteracoes */
@@ -120,12 +120,8 @@ int main(int argc, char *argv[])
 		          upProc, n, MPI_COMM_WORLD, &req[3]);
 
 		//  Calcula para linhas que nao dependem dos vizinhos
-		for (i = 2; i < ni - 2; i++)
-		{
-			for (j = 1; j < nj - 1; j++)
-			{
-				if (old[i][j]<0 || old[i][j]>1) 
-					printf("%d: bad value %d\n", taskId, old[i][j]);
+		for (i = 2; i < ni - 2; i++) {
+			for (j = 1; j < nj - 1; j++) {
 
 				im = i - 1;
 				ip = i + 1;
@@ -152,12 +148,6 @@ int main(int argc, char *argv[])
 
 		//  Espera a conclusão dos envios e recebimentos
 		MPI_Waitall(4, req, stat);
-		//for (i = 0; i < ni; ++i) {
-		//	for (j = 0; i < nj; ++j) {
-		//		if (old[i][j]<0 || old[i][j]>1) 
-		//			//printf("%d: has %d\n", taskId, old[i][j]);
-		//	}
-		//}
 		//  Trata as quinas
 		if (taskId == 0) {
 			old[0][0]       = old[realLines][realColumns];
@@ -171,8 +161,6 @@ int main(int argc, char *argv[])
 		//  Calcula as linhas que dependem dos vizinhos
 		i = 1;
 		for (j = 1; j < nj - 1; j++) {
-			if (old[i][j]<0 || old[i][j]>1) 
-					printf("%d: bad value %d, %d [%d, %d]\n", taskId, old[i][j], n, i, j);
 
 			im = i - 1;
 			ip = i + 1;
@@ -197,8 +185,6 @@ int main(int argc, char *argv[])
 		}
 		i = realLines;
 		for (j = 1; j < nj - 1; j++) {
-			if (old[i][j]<0 || old[i][j]>1) 
-					printf("%d: bad value %d, %d [%d, %d]\n", taskId, old[i][j], n, i, j);
 
 			im = i - 1;
 			ip = i + 1;
@@ -244,6 +230,7 @@ int main(int argc, char *argv[])
 	fprintf(outfile, "\n# Celulas Vivas = %d\n", isum);
 	fclose(outfile);
 
+	// Tarefa de rank 0 imprime o total global de celulas vivas
 	int globalsum;
 	MPI_Reduce(&isum, &globalsum, 1, MPI_INT, MPI_SUM,
 		0, MPI_COMM_WORLD);
