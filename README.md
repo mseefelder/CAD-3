@@ -2,13 +2,13 @@
 
 ## Estados
  
-* Ex. 1: **Feito**;
-* Ex. 2: **Feito**;
-* Ex. 3: **Feito**;
-* Ex. 4: **Feito**;
+* Ex. 1: **Escrito**(precisa medir?);
+* Ex. 2: **Escrito**(precisa medir?);
+* Ex. 3: **Escrito**(precisa medir?);
+* Ex. 4: **Escrito**(precisa medir?);
 * Ex. 5: _;
 * Ex. 6: _;
-* Ex. 7: **Feito**(e bem documentado no `README.md`);
+* Ex. 7: **Escrito**(e bem documentado no `README.md`);
 
 ## Legenda
 
