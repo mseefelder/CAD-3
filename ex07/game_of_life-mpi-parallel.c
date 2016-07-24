@@ -9,10 +9,10 @@ Versão sequencial
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NI 32        /* tamanho dos array  */
-#define NJ 32
+#define NI 700        /* tamanho dos array  */
+#define NJ 700
 
-#define NSTEPS 10    /* Numero de iteracoes */
+#define NSTEPS 500    /* Numero de iteracoes */
 
 int main(int argc, char *argv[])
 {
@@ -73,15 +73,16 @@ int main(int argc, char *argv[])
 	fflush(outfile);
 
 	/*  inicializando elementos  */
-
-	for (i = 1; i < realLines; i++) {
-		for (j = 1; j < realColumns; j++) {
+	int count = 0;
+	for (i = 1; i <= realLines; i++) {
+		for (j = 1; j <= realColumns; j++) {
 			x = rand() / ((float)RAND_MAX + 1);
 			if (x < 0.5) {
 				old[i][j] = 0;
 			} else {
 				old[i][j] = 1;
 			}
+			count += old[i][j];
 		}
 	}
 
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
 		taskId + 1 : 0;
 	downProc = (taskId > 0) ?
 		taskId - 1 : commSize-1;
-	
+
 	fflush(outfile);
 
 	/* */
@@ -109,20 +110,23 @@ int main(int argc, char *argv[])
 		// Codigo Paralelo: Trocar elementos da interface paralela
 		// Envio para processo acima, recebimento do mesmo
 		MPI_Isend(old[1], nj, MPI_INT,
-		          upProc, n, MPI_COMM_WORLD, &req[0]);
+		          downProc, n, MPI_COMM_WORLD, &req[0]);
 		MPI_Irecv(old[0], nj, MPI_INT,
-		          upProc, n, MPI_COMM_WORLD, &req[1]);
+		          downProc, n, MPI_COMM_WORLD, &req[1]);
 		// Envio para processo abaixo, recebimento do mesmo
 		MPI_Isend(old[realLines], nj, MPI_INT,
-		          downProc, n, MPI_COMM_WORLD, &req[2]);
+		          upProc, n, MPI_COMM_WORLD, &req[2]);
 		MPI_Irecv(old[realLines + 1], nj, MPI_INT,
-		          downProc, n, MPI_COMM_WORLD, &req[3]);
+		          upProc, n, MPI_COMM_WORLD, &req[3]);
 
 		//  Calcula para linhas que nao dependem dos vizinhos
 		for (i = 2; i < ni - 2; i++)
 		{
 			for (j = 1; j < nj - 1; j++)
 			{
+				if (old[i][j]<0 || old[i][j]>1) 
+					printf("%d: bad value %d\n", taskId, old[i][j]);
+
 				im = i - 1;
 				ip = i + 1;
 				jm = j - 1;
@@ -148,6 +152,12 @@ int main(int argc, char *argv[])
 
 		//  Espera a conclusão dos envios e recebimentos
 		MPI_Waitall(4, req, stat);
+		//for (i = 0; i < ni; ++i) {
+		//	for (j = 0; i < nj; ++j) {
+		//		if (old[i][j]<0 || old[i][j]>1) 
+		//			//printf("%d: has %d\n", taskId, old[i][j]);
+		//	}
+		//}
 		//  Trata as quinas
 		if (taskId == 0) {
 			old[0][0]       = old[realLines][realColumns];
@@ -161,6 +171,9 @@ int main(int argc, char *argv[])
 		//  Calcula as linhas que dependem dos vizinhos
 		i = 1;
 		for (j = 1; j < nj - 1; j++) {
+			if (old[i][j]<0 || old[i][j]>1) 
+					printf("%d: bad value %d, %d [%d, %d]\n", taskId, old[i][j], n, i, j);
+
 			im = i - 1;
 			ip = i + 1;
 			jm = j - 1;
@@ -184,6 +197,9 @@ int main(int argc, char *argv[])
 		}
 		i = realLines;
 		for (j = 1; j < nj - 1; j++) {
+			if (old[i][j]<0 || old[i][j]>1) 
+					printf("%d: bad value %d, %d [%d, %d]\n", taskId, old[i][j], n, i, j);
+
 			im = i - 1;
 			ip = i + 1;
 			jm = j - 1;
