@@ -1,23 +1,23 @@
 #include "mpi.h"
 #include<stdint.h>
 
-int32_t main(int32_t argc, char** argv){
+int main(int32_t argc, char** argv){
   // N = 2^5*3^5*5^3*7^2*11
   // So probably divisible by any commSize :P
-  const int32_t N = 523908000;
-  const int32_t ROOT = 0;
+  const int N = 523908000;
+  const int ROOT = 0;
 
   MPI_Init( &argc, &argv );
 
-  int32_t taskId;
+  int taskId;
   MPI_Comm_rank(MPI_COMM_WORLD, &taskId);
 
-  int32_t commSize;
+  int commSize;
   MPI_Comm_size(MPI_COMM_WORLD, &commSize);
 
-  int32_t NperP = N/commSize;
+  int NperP = N/commSize;
 
-  int32_t i;
+  int i;
 
   int32_t *a, *b;
   if(taskId == ROOT){
@@ -31,8 +31,8 @@ int32_t main(int32_t argc, char** argv){
     printf("Finished generating random numbers\n");
   }
 
-  int32_t * sa = malloc(NperP*sizeof(int));
-  int32_t * sb = malloc(NperP*sizeof(int));
+  int32_t * sa = malloc(NperP*sizeof(int32_t));
+  int32_t * sb = malloc(NperP*sizeof(int32_t));
 
   // Distribute sub-vectors
   MPI_Scatter(a, NperP, MPI_INTEGER, sa, NperP, MPI_INTEGER, ROOT, MPI_COMM_WORLD);
