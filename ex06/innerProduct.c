@@ -2,7 +2,7 @@
 #include<stdint.h>
 
 int32_t main(int32_t argc, char** argv){
-  // This N is divisible by 2^5, 3^4, 5^3, 7^2, 11
+  // N = 2^5*3^5*5^3*7^2*11
   // So probably divisible by any commSize :P
   const int32_t N = 523908000;
   const int32_t ROOT = 0;
