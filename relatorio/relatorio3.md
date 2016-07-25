@@ -55,11 +55,40 @@ Disponível no diretório *ex04*.
 
 # Exercício 5
 
+Disponível no diretório *ex05*.
 
+Para a implementação da multiplicação de matrizes (A e B), fizemos um *broadcast* da matriz B para todos os processos e fizemos um *scatter* da matriz A entre os processos. Consideramos que B era transposta, para simplificar o acesso à memória (acessamos tudo por linhas). Dessa maneira, cada processo resolve a multiplicação para um conjunto de linhas da matriz e no final é feito um *gather* para agregar a matriz de resultado no processo de *rank* 0.
+
+## Resultados
+
+![](../imagens/speedup-5.png)\
+
+*Speedup da implementação de `matrix.c` (versão paralela com MPI) em relação à de `matrix-serial.c` (versão serial)*
+
+![](../imagens/efficiency-5.png)\
+
+*Eficiência da implementação de `matrix.c` (versão paralela com MPI) em relação à de `matrix-serial.c` (versão serial)*
+
+## Análise
+
+Percebe-se uma melhora clara da versão paralela em relação à sequencial. Além disso, a execução com 4 processos é a que melhor relaciona eficiência e *speedup*, uma vez que oferece um *speedup* de quase 4 vezes com quase 100% de eficiência.
 
 # Exercício 6
 
+Disponível no diretório *ex06*.
 
+
+## Resultados
+
+Nossos testes foram realizados em vetores de `277200000` elementos (próximo de 1 Gigabyte).
+
+![](../imagens/speedup-6.png)\
+
+*Speedup da implementação de `innerProduct.c` (versão paralela com MPI) em relação à de `innerProduct-serial.c` (versão serial)*
+
+## Análise
+
+Percebe-se que houve uma perda de velocidade do código paralelo em relação ao em série. Acreditamos que o *overhead* de comunicação entre os processos criado pelo uso da MPI não compensa no caso dessa aplicação que faz operações simples. É possível que aumentado o vetor, obtivéssemos alguma melhora do paralelo em relação ao sequencial, mas para vetores muito grandes, a memória passa a ser o problema.
 
 # Exercício 7
 

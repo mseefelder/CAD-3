@@ -1,16 +1,7 @@
 #include "mpi.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include <stdint.h>
-
-int32_t * random_matrix(int size){
-  int32_t * matrix = malloc(size*size*sizeof(int32_t));
-
-
-  return matrix;
-}
-
-inline void transpose(int32_t * matrix, int size) {
-  // Do nothing for now. Suppose it's already transposed
-}
 
 int main( int argc, char ** argv){
   int N = argc > 1 ? atoi(argv[1]) : 1000;
@@ -36,8 +27,8 @@ int main( int argc, char ** argv){
 
     for(i = 0; i < N; i++){
       for(j = 0; j < N; j++){
-        A[i*N+j] = i+j;
-        B[i*N+j] = i*j;
+        A[i*N+j] = 1;
+        B[i*N+j] = 2;
       }
     }
   }
