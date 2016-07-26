@@ -8,10 +8,9 @@ papersize: A4
 geometry: margin=2cm 
 ---
 
-
 # Exercício 1
 
-Disponível no diretório *ex01*.
+Código fonte disponível no diretório *ex01* do arquivo anexo junto ao relatório.
 
 **Compilação**: `mpicc -o hello main.c`
  
@@ -19,13 +18,13 @@ Disponível no diretório *ex01*.
 
 # Exercício 2
 
-Disponível no diretório *ex02*.
+Código fonte disponível no diretório *ex02* do arquivo anexo junto ao relatório.
 
 ## Troca de mensagens bloqueante
 
 **Compilação**: `mpicc -o helloBsend helloBsend.c`
  
-**Execução**: `mpirun -np 8 ./helloBsend`
+**Execução**: `mpirun -np <numero de processos> ./helloBsend`
 
 **Observação**: Foi necessário incluir uma checagem de paridade no número de processos, pois caso o número fosse ímpar, um processo sobrava na atribuição de pares e causava *deadlock* na execução, como era de se esperar.
 
@@ -33,31 +32,39 @@ Disponível no diretório *ex02*.
 
 **Compilação**: `mpicc -o helloNBsend helloNBsend.c`
  
-**Execução**: `mpirun -np 8 ./helloNBsend`
+**Execução**: `mpirun -np <numero de processos> ./helloNBsend`
 
 **Observação**: Na linha 57 (`MPI_Waitall(2, req, stat);`) está a subrotina que bloqueia o processo até que tanto seu envio quanto seu recebimento tenham sido concluídos, caso contrário o processo pode terminar antes de receber o id do parceiro (com um resultado errado).
 
 # Exercício 3
 
-Disponível no diretório *ex03*.
+Código fonte disponível no diretório *ex03* do arquivo anexo junto ao relatório.
 
 **Compilação**: `mpicc -o ring ring.c`
  
-**Execução**: `mpirun -np 8 ./ring`
+**Execução**: `mpirun -np <numero de processos> ./ring`
 
 # Exercício 4
 
-Disponível no diretório *ex04*.
+Código fonte disponível no diretório *ex04* do arquivo anexo junto ao relatório.
 
 **Compilação**: `mpicc -o ringSum ringSum.c`
  
-**Execução**: `mpirun -np 8 ./ringSum`
+**Execução**: `mpirun -np <numero de processos> ./ringSum`
 
 # Exercício 5
 
-Disponível no diretório *ex05*.
+Código fonte disponível no diretório *ex05* do arquivo anexo junto ao relatório.
 
 Para a implementação da multiplicação de matrizes (A e B), fizemos um *broadcast* da matriz B para todos os processos e fizemos um *scatter* da matriz A entre os processos. Consideramos que B era transposta, para simplificar o acesso à memória (acessamos tudo por linhas). Dessa maneira, cada processo resolve a multiplicação para um conjunto de linhas da matriz e no final é feito um *gather* para agregar a matriz de resultado no processo de *rank* 0.
+
+### Compilando
+
+`mpicc -o matrix matrix.c`
+
+### Executando
+
+`mpirun -np <numero de processos> ./matrix <valor de N>`
 
 ## Resultados
 
@@ -75,8 +82,17 @@ Percebe-se uma melhora clara da versão paralela em relação à sequencial. Al�
 
 # Exercício 6
 
-Disponível no diretório *ex06*.
+Código fonte disponível no diretório *ex06* do arquivo anexo junto ao relatório.
 
+Para dividir o produto interno entre os processos, fizemos um *scatter* dos vetores, calculamos os produtos internos separadamente e fazemos uma redução dos valores obtidos no processo de *rank* 0, tendo assim o produto interno do vetor inteiro.
+
+### Compilando
+
+`mpicc -o innerProduct innerProduct.c`
+
+### Executando
+
+`mpirun -np <numero de processos> ./innerProduct`
 
 ## Resultados
 
@@ -102,11 +118,11 @@ O arquivo `game_of_life-mpi-replica.c` apresenta a versão serial do código de 
 
 ### Executando
 
-`mpirun -np 8 ./conway-replica`
+`mpirun -np <numero de processos> ./conway-replica`
 
 ## Versão paralela com MPI
 
-O arquivo `game_of_life-mpi-parallel.c` apresenta a versão paralela do jogo da vida de conway. Partindo do código disponível em `game_of_life-mpi-replica.c`: 
+O arquivo `game_of_life-mpi-parallel.c` apresenta a versão paralela do jogo da vida de conway. Partindo do código fonte disponível em `game_of_life-mpi-replica.c`: 
 
 * Realizamos a decomposição do domínio por linhas: 
 	* Tendo definidos um número de linhas e colunas NI e NJ, respectivamente, decobrimos o número `commSize` de processos e dividimos o número de linhas entre os processos, tendo `ni = (NI/commSize)+2`. O `+2` é referente às células fantasma no limite dos domínios que são recebidas dos processos vizinhos
@@ -123,8 +139,10 @@ O arquivo `game_of_life-mpi-parallel.c` apresenta a versão paralela do jogo da 
 
 ### Executando
 
-`mpirun -np 8 ./conway-parallel`
+`mpirun -np <numero de processos> ./conway-parallel`
 
 ### Observação:
 
-Como era de se experar, o número de cálulas vivas no final não é o mesmo que no caso serial uma vez que o domínio é preenchido com a função `rand()` de **C**, o que no código serial acontece em um só processo, acontece igual nos processos do MPI. Uma observação que pode ser feita é que no código original fornecido com a especificação do trabalho (`game_of_life-serial.c`), não é fornecida nenhuma *seed* para a geração de números aleatórios, portanto a sequência gerada é sempre a mesma. Continuamos seguindo isso nas duas implementações posteriores, o que nos permitiu verificar o bom funcionamento do código, pois uma versão específica do código tem que terminar sempre com o mesmo número de células vivas.
+Como era de se esperar, o número de células vivas no final do caso paralelo não é o mesmo que no caso serial uma vez que o domínio é preenchido com a função `rand()` de **C**, o que no código serial acontece em um só processo, acontece igual em cada processo do MPI (portanto o domínio da versão paralela fica diferente daquele da versão serial). Uma observação que pode ser feita é que no código original fornecido com a especificação do trabalho (`game_of_life-serial.c`), não é fornecida nenhuma *seed* para a geração de números aleatórios, portanto a sequência gerada é sempre a mesma. Continuamos seguindo isso nas duas implementações posteriores, o que nos permitiu verificar o bom funcionamento do código, pois uma versão específica do código tem que terminar sempre com o mesmo número de células vivas.
+
+Tomamos a liberdade de gerar os subdomínios independentemente em cada processo pois o propósito é que o domínio fosse aleatório e focamos na solução da paralelização da execução das iterações.
