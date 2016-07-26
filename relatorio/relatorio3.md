@@ -56,7 +56,9 @@ Código fonte disponível no diretório *ex04* do arquivo anexo junto ao relató
 
 Código fonte disponível no diretório *ex05* do arquivo anexo junto ao relatório.
 
-Para a implementação da multiplicação de matrizes (A e B), fizemos um *broadcast* da matriz B para todos os processos e fizemos um *scatter* da matriz A entre os processos. Consideramos que B era transposta, para simplificar o acesso à memória (acessamos tudo por linhas). Dessa maneira, cada processo resolve a multiplicação para um conjunto de linhas da matriz e no final é feito um *gather* para agregar a matriz de resultado no processo de *rank* 0.
+Para a implementação da multiplicação de matrizes (A e B), fizemos um *broadcast* da matriz B para todos os processos e fizemos um *scatter* da matriz A entre os processos. Dessa maneira, cada processo resolve a multiplicação para um conjunto de linhas da matriz A com todas as colunas da matriz B e no final é feito um *gather* para agregar a matriz de resultado no processo de *rank* 0.
+
+Uma outra alternativa que pensamos e que diminuiria o overhead de transmissão (evitando o broadcast de B) era dividir linhas da matriz A e colunas da matriz B e distribuir entre os processos, assim cada processo terminaria com uma sub-matriz de C para ser calculado. Entretanto a limitação é que o numero de processos tem que ser igual a $k^2, k > 0$, portanto ficamos com a solução do broadcast que era mais simples.
 
 ### Compilando
 
