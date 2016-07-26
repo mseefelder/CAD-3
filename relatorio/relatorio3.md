@@ -108,6 +108,8 @@ Percebe-se que houve uma perda de velocidade do código paralelo em relação ao
 
 # Exercício 7
 
+Código fonte disponível no diretório *ex07* do arquivo anexo junto ao relatório.
+
 ## Versão replicada com MPI
 
 O arquivo `game_of_life-mpi-replica.c` apresenta a versão serial do código de `game_of_life-serial.c` replicada em processos MPI. Isso foi feito apenas incluindo `mpi.h`, inicializando o contexto MPI no início da `main()` e finalizando o mesmo no final da `main()`.
